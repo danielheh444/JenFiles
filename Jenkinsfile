@@ -7,14 +7,15 @@ pipeline {
    }
 
 	
-   stages {
-        stage('Clone Repository') {
-            steps {
-                git url: 'git@github.com:danielheh444/files.git', credentialsId: 'GitHub-ssh-key'
-            }
-        }
    
    stages {
+
+      stage('Clone Repository') {
+         steps {
+            git url: 'git@github.com:danielheh444/files.git', credentialsId: 'GitHub-ssh-key'
+            }
+        }
+
       stage('Build Docker Image') {
          steps {
 	    script {
