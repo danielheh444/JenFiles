@@ -1,0 +1,33 @@
+pipeline {
+
+   agent any
+
+   environment {
+	   CONTAINER_NAME = 'nginx'
+           DOCKER_HUB_REPO = 'danielheh/my-nginx'
+   }
+
+
+   stages {
+      stage('Stop Old Container') {
+         steps {
+            sh '''
+            if [ \$(docker ps -q -f name=${CONTAINER_NAME}) ]; then
+            docker stop ${CONTAINER_NAME}
+            docker rm ${CONTAINER_NAME}
+            fi
+            '''			
+      }
+
+
+      stage ('Run Container') {
+         steps {
+	    sh 'docker pull ${DOCKER_HUB_REPO}:latest'
+            sh 'docker run -d --name ${CONTAINER_NAME} -p 80:80 ${DOCKER_HUB_REPO}:latest'
+         }
+
+      }
+
+
+   }
+}
