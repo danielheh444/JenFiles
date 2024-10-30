@@ -19,7 +19,7 @@ pipeline {
       stage('Build Docker Image') {
          steps {
 	    script {
-               dockerImage = docker.build("${login_docker}/my-nginx:${env.BUILD_ID}")
+               dockerImage = docker.build("${login_docker}/nginx-jen:${env.BUILD_ID}")
             }
          }
      
@@ -28,7 +28,9 @@ pipeline {
       stage ('Push Registry') {
          steps {
             script {
-            dockerImage.push("latest")
+               docker.withRegistry('https://index.docker.io/v1/', 'cred-for-docker-hub'){
+                  dockerImage.push("latest")
+               }
             }
          }
       }
