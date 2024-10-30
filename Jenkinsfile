@@ -12,7 +12,7 @@ pipeline {
 
       stage('Clone Repository') {
          steps {
-            git url: 'git@github.com:danielheh444/files.git', credentialsId: 'GitHub-ssh-key'
+            git url: 'git@github.com:danielheh444/files.git', branch: 'main', credentialsId: 'GitHub-ssh-key'
             }
         }
 
