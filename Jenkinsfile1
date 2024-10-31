@@ -1,33 +1,35 @@
 pipeline {
-
-   agent any
-
+   
+   agent {label 'comp-2'}
+ 
    environment {
-	   CONTAINER_NAME = 'nginx'
-           DOCKER_HUB_REPO = 'danielheh/my-nginx'
+       CONTAINER_NAME = 'nginx'
+       DOCKER_HUB_REPO = 'danielheh/nginx-jen'
    }
-
 
    stages {
       stage('Stop Old Container') {
          steps {
             sh '''
-            if [ \$(docker ps -q -f name=${CONTAINER_NAME}) ]; then
-            docker stop ${CONTAINER_NAME}
-            docker rm ${CONTAINER_NAME}
+            if [ $(docker ps -q -f name=${CONTAINER_NAME}) ]; then
+               docker stop ${CONTAINER_NAME}
+               docker rm ${CONTAINER_NAME}
             fi
-            '''			
+            '''
+         }
       }
 
+      stage('Clxone Repository') {
+         steps {
+            git url: 'git@github.com:danielheh444/files.git', branch: 'main', credentialsId: 'GitHub-ssh-key'
+          }
+       }
 
       stage ('Run Container') {
          steps {
-	    sh 'docker pull ${DOCKER_HUB_REPO}:latest'
+            sh 'docker pull ${DOCKER_HUB_REPO}:latest'
             sh 'docker run -d --name ${CONTAINER_NAME} -p 80:80 ${DOCKER_HUB_REPO}:latest'
          }
-
       }
-
-
    }
 }

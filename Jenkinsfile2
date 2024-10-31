@@ -1,0 +1,37 @@
+pipeline {
+   agent {label 'comp-2'}
+   environment {
+       CONTAINER_NAME = 'nginx'
+       DOCKER_HUB_REPO = 'danielheh/nginx-jen'
+   }
+
+   stages {
+      stage('Stop Old Container') {
+         steps {
+            script {
+                container = docker.instance.inspect("${CONTAINER_NAME}", true)
+                if (container) {
+                    docker.instance.stop("${CONTAINER_NAME}")
+                    docker.instance.removeContainer("${CONTAINER_NAME}")
+                }
+            }
+         }
+      }
+
+      stage('Clxone Repository') {
+         steps {
+            git url: 'git@github.com:danielheh444/files.git', branch: 'main', credentialsId: 'GitHub-ssh-key'
+          }
+      }
+
+      stage ('Run Container') {
+         steps {
+            script {
+                img = docker.image("${DOCKER_HUB_REPO}:latest")
+                img.pull()
+                img.run("--name ${CONTAINER_NAME} -p 80:80")
+            }
+         }
+      }
+   }
+}
