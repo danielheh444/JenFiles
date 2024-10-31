@@ -31,5 +31,10 @@ pipeline {
             sh 'docker run -d --name ${CONTAINER_NAME} -p 80:80 ${DOCKER_HUB_REPO}:latest'
          }
       }
+      stage ('Clean up') {
+         steps {
+         sh 'docker rmi $(docker images -f 'dangling=true' -q)'
+         }    
+      }
    }
 }

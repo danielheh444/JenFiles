@@ -19,7 +19,7 @@ pipeline {
       stage('Build Docker Image') {
          steps {
 	    script {
-               dockerImage = docker.build("${login_docker}/nginx-jen:${env.BUILD_ID}")
+               dockerImage = docker.build("${login_docker}/nginx-jen:latest")
             }
          }
      
@@ -32,6 +32,12 @@ pipeline {
                   dockerImage.push("latest")
                }
             }
+         }
+      }
+
+      stage ('Clean Images') {
+         steps {
+            sh 'docker rmi -f $(docker images -q)'
          }
       }
 
