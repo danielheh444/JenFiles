@@ -1,6 +1,6 @@
 pipeline {
 
-   agent any
+   agent {label 'comp-1'}
 
    environment {
 	   login_docker = 'danielheh'		
